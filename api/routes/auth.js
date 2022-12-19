@@ -49,10 +49,18 @@ const LCS = require('../utils/LCS');
 // "password": "nguyen123"
 // }
 router.post('/signup', async (req, res) => {
-  const { password } = req.query;
-  let phoneNumber = req.query.phoneNumber;
-
-  // console.log(req);
+  const phoneNumber = req.body.phoneNumber;
+  const password = req.body.password;
+  
+  const newUser = new User({
+    name: req.body.name,
+    birthday: req.body.birthday,
+    phoneNumber: phoneNumber,
+    email: req.body.email,
+    password: req.body.name,
+    verifyCode: random4digit(),
+    isVerified: false,
+  });
 
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
@@ -75,9 +83,9 @@ router.post('/signup', async (req, res) => {
       'phoneNumber'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
   if (phoneNumber == password) {
     return callRes(
       res,
@@ -86,14 +94,8 @@ router.post('/signup', async (req, res) => {
     );
   }
   try {
-    let user = await User.findOne({ phoneNumber });
+    let user = await User.findOne({ phoneNumber: phoneNumber });
     if (user) return callRes(res, responseError.USER_EXISTED);
-    const newUser = new User({
-      phoneNumber,
-      password,
-      verifyCode: random4digit(),
-      isVerified: false,
-    });
     // hash the password before save to DB
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return callRes(res, responseError.UNKNOWN_ERROR, err.message);
