@@ -51,13 +51,13 @@ const LCS = require('../utils/LCS');
 router.post('/signup', async (req, res) => {
   const phoneNumber = req.body.phoneNumber;
   const password = req.body.password;
-  
   const newUser = new User({
-    name: req.body.name,
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
     birthday: req.body.birthday,
     phoneNumber: phoneNumber,
     email: req.body.email,
-    password: req.body.name,
+    password: password,
     verifyCode: random4digit(),
     isVerified: false,
   });
