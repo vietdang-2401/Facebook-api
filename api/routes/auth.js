@@ -294,8 +294,7 @@ router.post('/check_verify_code', async (req, res) => {
 // @desc   login
 // @access Public
 router.post('/login', async (req, res) => {
-  const { password } = req.query;
-  let phonenumber = req.query.phonenumber;
+  const { phonenumber, password } = req.body;
   if (phonenumber === undefined || password === undefined) {
     return callRes(
       res,
