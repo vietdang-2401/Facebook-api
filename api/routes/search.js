@@ -1,5 +1,6 @@
 const router = require('express').Router();
 const Post = require('../models/Post');
+const User = require('../models/User')
 const Search = require('../models/Search');
 const verify = require('../utils/verifyToken');
 const removeAccents  = require('../utils/removeAccents');
@@ -7,6 +8,23 @@ const { ObjectId } = require('mongodb');
 const {responseError, callRes, setAndSendResponse} = require('../response/error');
 const validInput = require('../utils/validInput');
 const { timeToSecond } = require('../utils/validTime');
+
+
+//search user by name
+
+router.post('/search_user', (req, res) => {
+    var searchValue = req.body.searchValue;
+    User.find({"name": { $regex: '.*' + searchValue + '.*' }})
+    .then((data) => {
+        if (!data) {
+            return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, data)}
+        return callRes(res, responseError.OK, data)
+    })
+    .catch((err) => {
+        return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, data)
+    });
+
+})
 
 // search posts by keyword
 router.post('/search', verify, (req, res) => {
@@ -104,7 +122,7 @@ router.post('/search', verify, (req, res) => {
                 }
                 //search_text.push(words.slice(i, (i+num_words)).join(" "));
             }
-            console.log(search_text);
+            // console.log(search_text);
 
             posts.forEach( (post, index, object) => {
                 search_text.forEach(text => {

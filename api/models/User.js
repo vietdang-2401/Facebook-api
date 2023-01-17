@@ -13,6 +13,10 @@ const UserSchema = new Schema({
     middleName: {
       type: String,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     birthday: {
       type: Date,
       require: true,

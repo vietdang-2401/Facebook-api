@@ -54,6 +54,7 @@ router.post('/signup', async (req, res) => {
   const newUser = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
+    name: req.body.lastName + req.body.firstName ,
     birthday: req.body.birthday,
     phoneNumber: phoneNumber,
     email: req.body.email,
@@ -62,6 +63,7 @@ router.post('/signup', async (req, res) => {
     isVerified: false,
   });
 
+  console.log(newUser);
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -381,8 +383,13 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/change_password', verifyToken, async (req, res) => {
-  const { token, password, new_password } = req.query;
+  // const { token, password, new_password } = req.query;
+  const password = req.body.password;
+  const new_password = req.body.new_password;
+  const userId = req.body.userId
 
+  // console.log(userId, password, new_password);
+  
   if (!password || !new_password) {
     return callRes(
       res,
@@ -429,7 +436,7 @@ router.post('/change_password', verifyToken, async (req, res) => {
 
   let user;
   try {
-    user = await User.findById(req.user.id);
+    user = await User.findById(userId);
   } catch (err) {
     console.log('Can not connect to DB');
     return setAndSendResponse(res, responseError.CAN_NOT_CONNECT_TO_DB);

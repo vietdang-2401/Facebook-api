@@ -92,6 +92,25 @@ router.post ('/get_user_info', async (req, res) => {
   }
 });
 
+router.post('/update_name', async (req, res) => {
+  const firstName = req.body.firstName;
+  const lastName = req.body.lastName;
+  const middleName = req.body.middleName;
+  const name = lastName + middleName + firstName
+  const _id = req.query.userId;
+
+  User.findByIdAndUpdate(_id, {firstName: firstName, middleName: middleName, lastName: lastName, name: name},
+    function (err, docs) {
+      if (err){
+        return callRes(res, responseError.UNKNOWN_ERROR, err.message);
+      }
+      else{
+        return callRes(res, responseError.OK);
+      }
+    }
+  )
+})
+
 var cpUpload = uploader.fields([{ name: 'avatar'}, { name: 'cover_image'}]);
 router.post('/set_user_info', cpUpload, verify, async (req, res) => {
   let { username, description, address, city,country, link} = req.query;
