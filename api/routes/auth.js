@@ -49,11 +49,21 @@ const LCS = require('../utils/LCS');
 // "password": "nguyen123"
 // }
 router.post('/signup', async (req, res) => {
-  const { password } = req.query;
-  let phoneNumber = req.query.phoneNumber;
+  const phoneNumber = req.body.phoneNumber;
+  const password = req.body.password;
+  const newUser = new User({
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    name: req.body.lastName + req.body.firstName ,
+    birthday: req.body.birthday,
+    phoneNumber: phoneNumber,
+    email: req.body.email,
+    password: password,
+    verifyCode: random4digit(),
+    isVerified: false,
+  });
 
-  // console.log(req);
-
+  console.log(newUser);
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -75,9 +85,9 @@ router.post('/signup', async (req, res) => {
       'phoneNumber'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
   if (phoneNumber == password) {
     return callRes(
       res,
@@ -86,14 +96,8 @@ router.post('/signup', async (req, res) => {
     );
   }
   try {
-    let user = await User.findOne({ phoneNumber });
+    let user = await User.findOne({ phoneNumber: phoneNumber });
     if (user) return callRes(res, responseError.USER_EXISTED);
-    const newUser = new User({
-      phoneNumber,
-      password,
-      verifyCode: random4digit(),
-      isVerified: false,
-    });
     // hash the password before save to DB
     bcrypt.genSalt(10, (err, salt) => {
       if (err) return callRes(res, responseError.UNKNOWN_ERROR, err.message);
@@ -378,8 +382,13 @@ router.post('/login', async (req, res) => {
 });
 
 router.post('/change_password', verifyToken, async (req, res) => {
-  const { token, password, new_password } = req.query;
+  // const { token, password, new_password } = req.query;
+  const password = req.body.password;
+  const new_password = req.body.new_password;
+  const userId = req.body.userId
 
+  // console.log(userId, password, new_password);
+  
   if (!password || !new_password) {
     return callRes(
       res,
@@ -426,7 +435,7 @@ router.post('/change_password', verifyToken, async (req, res) => {
 
   let user;
   try {
-    user = await User.findById(req.user.id);
+    user = await User.findById(userId);
   } catch (err) {
     console.log('Can not connect to DB');
     return setAndSendResponse(res, responseError.CAN_NOT_CONNECT_TO_DB);
