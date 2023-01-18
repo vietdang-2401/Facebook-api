@@ -299,6 +299,7 @@ router.post('/check_verify_code', async (req, res) => {
 // @access Public
 router.post('/login', async (req, res) => {
   const { phoneNumber, password } = req.body;
+  
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -320,9 +321,9 @@ router.post('/login', async (req, res) => {
       'phoneNumber'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
   if (phoneNumber == password) {
     return callRes(
       res,
