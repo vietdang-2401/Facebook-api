@@ -298,8 +298,8 @@ router.post('/check_verify_code', async (req, res) => {
 // @desc   login
 // @access Public
 router.post('/login', async (req, res) => {
-  const { password } = req.query;
-  let phoneNumber = req.query.phoneNumber;
+  const { phoneNumber, password } = req.body;
+  
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -321,9 +321,9 @@ router.post('/login', async (req, res) => {
       'phoneNumber'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
   if (phoneNumber == password) {
     return callRes(
       res,
@@ -340,12 +340,12 @@ router.post('/login', async (req, res) => {
         responseError.USER_IS_NOT_VALIDATED,
         'không có user này'
       );
-    if (!user.isVerified)
-      return callRes(
-        res,
-        responseError.USER_IS_NOT_VALIDATED,
-        'chưa xác thực code verify'
-      );
+    // if (!user.isVerified)
+    //   return callRes(
+    //     res,
+    //     responseError.USER_IS_NOT_VALIDATED,
+    //     'chưa xác thực code verify'
+    //   );
     bcrypt.compare(password, user.password).then(async (isMatch) => {
       if (!isMatch)
         return callRes(

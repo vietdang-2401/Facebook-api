@@ -1,7 +1,7 @@
 const removeAccents = require('./removeAccents');
 // @desc check user password
 var checkUserPassword = (password) => {
-    var regex = /^[A-Za-z][0-9][!@#$%^&*]{6,}$/;
+    var regex = /^[A-Za-z][0-9][!@#$%^&*]{6,10}$/;
     return regex.test(password);
 }
 

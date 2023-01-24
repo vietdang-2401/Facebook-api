@@ -14,6 +14,7 @@ app.use(cors());
 
 // connect to MongoDB
 const url = process.env.mongoURI;
+mongoose.set('strictQuery', true);
 mongoose
   .connect(url)
   .then(() => console.log('MongoDB connected'))
