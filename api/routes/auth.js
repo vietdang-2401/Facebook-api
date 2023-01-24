@@ -63,7 +63,7 @@ router.post('/signup', async (req, res) => {
     isVerified: false,
   });
 
-  console.log(newUser);
+  // console.log(newUser);
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
