@@ -7,7 +7,7 @@ var checkUserPassword = (password) => {
 
 // @desc check phone number
 // @desc password valid: 10 digits, begin with '0'
-var checkphonenumber = (phonenumber) => {
+var checkPhoneNumber = (phonenumber) => {
   var regex = /^0[0-9]{9}$/;
   return regex.test(phonenumber);
 };
@@ -78,7 +78,7 @@ var checkNumber = (number) => {
 // console.log(checkLink('http://vnhackers.com.com/gg'))
 module.exports = {
   checkUserPassword,
-  checkphonenumber,
+  checkPhoneNumber,
   checkNotNegativeInteger,
   checkIsInteger,
   checkVerifyCode,

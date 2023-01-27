@@ -85,9 +85,9 @@ router.post('/signup', async (req, res) => {
       'phoneNumber'
     );
   }
-  // if (!validInput.checkUserPassword(password)) {
-  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  // }
+  if (!validInput.checkUserPassword(password)) {
+    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  }
   if (phoneNumber == password) {
     return callRes(
       res,
