@@ -624,16 +624,10 @@ CAN_NOT_CONNECT_TO_DB neu khong luu duoc post vao csdl
 var cpUpload = uploader.fields([{ name: 'image' }, { name: 'video' }]);
 router.post('/add_post', cpUpload, verify, async (req, res, next) => {
   var { described, status, image, video, userId } = req.body;
-  console.log(image);
-  console.log(!described, !image, !video);
-
-  if (!described && !image && !video) {
-    console.log('Khong co described, image, video');
-    return setAndSendResponse(res, responseError.PARAMETER_IS_NOT_ENOUGH);
-  }
 
   if (image) {
     image = JSON.parse(image);
+    console.log(image);
     if (image[0].encoding === 'base64')
       image = image.map((item) => {
         return {
@@ -651,6 +645,11 @@ router.post('/add_post', cpUpload, verify, async (req, res, next) => {
           buffer: Buffer.from(item.buffer, 'base64'),
         };
       });
+  }
+
+  if (!described && !image && !video) {
+    console.log('Khong co described, image, video');
+    return setAndSendResponse(res, responseError.PARAMETER_IS_NOT_ENOUGH);
   }
 
   // PARAMETER_TYPE_IS_INVALID
@@ -673,7 +672,7 @@ router.post('/add_post', cpUpload, verify, async (req, res, next) => {
   }
 
   if (image && video) {
-    console.log('Have image and video');
+    console.log('Have image and video is not permiss');
     return setAndSendResponse(res, responseError.UPLOAD_FILE_FAILED);
   }
 
@@ -689,6 +688,7 @@ router.post('/add_post', cpUpload, verify, async (req, res, next) => {
   let promises;
 
   if (image) {
+    console.log('have image');
     // MAXIMUM_NUMBER_OF_IMAGES
     if (image.length > MAX_IMAGE_NUMBER) {
       console.log('MAXIMUM_NUMBER_OF_IMAGES');
