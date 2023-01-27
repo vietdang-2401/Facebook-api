@@ -45,7 +45,7 @@ const LCS = require('../utils/LCS');
 // Example: Use Postman
 // URL: http://127.0.0.1:5000/it4788/signup
 // BODY: {
-// "phoneNumber": "0789554152",
+// "phonenumber": "0789554152",
 // "password": "nguyen123"
 // }
 router.post('/signup', async (req, res) => {
@@ -54,7 +54,7 @@ router.post('/signup', async (req, res) => {
   const newUser = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    name: req.body.lastName + req.body.firstName ,
+    name: req.body.lastName + req.body.firstName,
     birthday: req.body.birthday,
     phoneNumber: phoneNumber,
     email: req.body.email,
@@ -114,7 +114,7 @@ router.post('/signup', async (req, res) => {
 
           let data = {
             id: saved.id,
-            phoneNumber: saved.phoneNumber,
+            phonenumber: saved.phonenumber,
             verifyCode: saved.verifyCode,
             isVerified: saved.isVerified,
           };
@@ -137,32 +137,32 @@ router.post('/signup', async (req, res) => {
 // @desc   get verified code
 // @access Public
 router.post('/get_verify_code', async (req, res) => {
-  const phoneNumber = req.query.phoneNumber;
+  const phonenumber = req.query.phonenumber;
 
-  if (!phoneNumber) {
-    console.log('PARAMETER_IS_NOT_ENOUGH phoneNumber');
-    return callRes(res, responseError.PARAMETER_IS_NOT_ENOUGH, 'phoneNumber');
+  if (!phonenumber) {
+    console.log('PARAMETER_IS_NOT_ENOUGH phonenumber');
+    return callRes(res, responseError.PARAMETER_IS_NOT_ENOUGH, 'phonenumber');
   }
 
-  if (phoneNumber && typeof phoneNumber != 'string') {
-    return callRes(res, responseError.PARAMETER_TYPE_IS_INVALID, 'phoneNumber');
+  if (phonenumber && typeof phonenumber != 'string') {
+    return callRes(res, responseError.PARAMETER_TYPE_IS_INVALID, 'phonenumber');
   }
-  if (!validInput.checkPhoneNumber(phoneNumber)) {
+  if (!validInput.checkphonenumber(phonenumber)) {
     return callRes(
       res,
       responseError.PARAMETER_VALUE_IS_INVALID,
-      'phoneNumber'
+      'phonenumber'
     );
   }
 
   try {
-    let user = await User.findOne({ phoneNumber: phoneNumber });
+    let user = await User.findOne({ phonenumber: phonenumber });
     if (!user) {
-      console.log('phoneNumber is not existed');
+      console.log('phonenumber is not existed');
       return callRes(
         res,
         responseError.USER_IS_NOT_VALIDATED,
-        'phoneNumber is not existed'
+        'phonenumber is not existed'
       );
     }
 
@@ -206,27 +206,27 @@ router.post('/get_verify_code', async (req, res) => {
 // @desc   check verified code
 // @access Public
 router.post('/check_verify_code', async (req, res) => {
-  const { phoneNumber, code_verify } = req.query;
+  const { phonenumber, code_verify } = req.query;
 
-  if (!phoneNumber || !code_verify) {
+  if (!phonenumber || !code_verify) {
     return callRes(
       res,
       responseError.PARAMETER_IS_NOT_ENOUGH,
-      'phoneNumber, code_verify'
+      'phonenumber, code_verify'
     );
   }
-  if (typeof phoneNumber != 'string' || typeof code_verify != 'string') {
+  if (typeof phonenumber != 'string' || typeof code_verify != 'string') {
     return callRes(
       res,
       responseError.PARAMETER_TYPE_IS_INVALID,
-      'phoneNumber, code_verify'
+      'phonenumber, code_verify'
     );
   }
-  if (!validInput.checkPhoneNumber(phoneNumber)) {
+  if (!validInput.checkphonenumber(phonenumber)) {
     return callRes(
       res,
       responseError.PARAMETER_VALUE_IS_INVALID,
-      'phoneNumber'
+      'phonenumber'
     );
   }
   if (!validInput.checkVerifyCode(code_verify)) {
@@ -238,13 +238,13 @@ router.post('/check_verify_code', async (req, res) => {
   }
 
   try {
-    let user = await User.findOne({ phoneNumber: phoneNumber });
+    let user = await User.findOne({ phonenumber: phonenumber });
     if (!user) {
-      console.log('phoneNumber is not existed');
+      console.log('phonenumber is not existed');
       return callRes(
         res,
         responseError.PARAMETER_VALUE_IS_INVALID,
-        'phoneNumber is not existed'
+        'phonenumber is not existed'
       );
     }
 
@@ -299,7 +299,7 @@ router.post('/check_verify_code', async (req, res) => {
 // @access Public
 router.post('/login', async (req, res) => {
   const { phoneNumber, password } = req.body;
-  
+
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -386,10 +386,10 @@ router.post('/change_password', verifyToken, async (req, res) => {
   // const { token, password, new_password } = req.query;
   const password = req.body.password;
   const new_password = req.body.new_password;
-  const userId = req.body.userId
+  const userId = req.body.userId;
 
   // console.log(userId, password, new_password);
-  
+
   if (!password || !new_password) {
     return callRes(
       res,
@@ -572,7 +572,7 @@ router.post(
         data: {
           id: user.id,
           username: user.name,
-          phoneNumber: user.phoneNumber,
+          phonenumber: user.phonenumber,
           created: String(Math.floor(user.registerDate / 1000)),
           avatar: user.avatar.url,
         },
@@ -598,7 +598,7 @@ router.post(
         data: {
           id: user.id,
           username: user.name,
-          phoneNumber: user.phoneNumber,
+          phonenumber: user.phonenumber,
           created: String(Math.floor(user.registerDate / 1000)),
           avatar: null,
         },
