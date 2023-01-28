@@ -120,7 +120,7 @@ router.post('/update_name',verify, async (req, res) => {
   const firstName = req.body.firstName
   const lastName = req.body.lastName
   const middleName = req.body.middleName
-  const name = lastName + middleName + firstName
+  const name = lastName + " "+ middleName + " " + firstName
   const _id = req.body.userId
   const token = req.query.token
 

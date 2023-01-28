@@ -54,7 +54,7 @@ router.post('/signup', async (req, res) => {
   const newUser = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    name: req.body.lastName + req.body.firstName ,
+    name: req.body.lastName + " " + req.body.firstName ,
     birthday: req.body.birthday,
     phoneNumber: phoneNumber,
     email: req.body.email,

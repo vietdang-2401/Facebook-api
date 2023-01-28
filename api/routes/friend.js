@@ -233,8 +233,8 @@ router.post('/set_block', verify, async (req, res) => {
   let user_id = req.body.userId;
   let type = req.body.type
   let id = req.query.id
-
   thisUser = await User.findById(id)
+
   if (thisUser.isBlocked) {
     return callRes(
       res,
@@ -242,13 +242,13 @@ router.post('/set_block', verify, async (req, res) => {
       'Your account has been blocked',
     )
   }
-  if (!token || !user_id || !type) {
-    return callRes(
-      res,
-      responseError.PARAMETER_IS_NOT_ENOUGH,
-      'token and user_id and type',
-    )
-  }
+  // if (!token || !user_id || !type) {
+  //   return callRes(
+  //     res,
+  //     responseError.PARAMETER_IS_NOT_ENOUGH,
+  //     'token and user_id and type',
+  //   )
+  // }
   if (type != 1 && type != 0) {
     return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'type')
   }
