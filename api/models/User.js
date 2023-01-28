@@ -15,7 +15,7 @@ const UserSchema = new Schema({
     },
     name: {
       type: String,
-      // required: true,
+      // required: tr`ue,
     },
     birthday: {
       type: Date,

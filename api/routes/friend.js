@@ -228,9 +228,12 @@ router.post('/set_request_friend', verify, async (req, res) => {
 
 router.post('/set_block', verify, async (req, res) => {
   var thisUser, targetUser
+  
+  let token = req.body.token;
+  let user_id = req.body.userId;
+  let type = req.body.type
+  let id = req.query.id
 
-  let { token, user_id, type } = req.query
-  let id = req.user.id
   thisUser = await User.findById(id)
   if (thisUser.isBlocked) {
     return callRes(

@@ -382,8 +382,9 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/change_password', verifyToken, async (req, res) => {
+router.post('/change_password', verify, async (req, res) => {
   // const { token, password, new_password } = req.query;
+  const token = req.query.token
   const password = req.body.password;
   const new_password = req.body.new_password;
   const userId = req.body.userId
@@ -404,16 +405,16 @@ router.post('/change_password', verifyToken, async (req, res) => {
       'password, new_password'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
-  if (!validInput.checkUserPassword(new_password)) {
-    return callRes(
-      res,
-      responseError.PARAMETER_VALUE_IS_INVALID,
-      'new_password'
-    );
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
+  // if (!validInput.checkUserPassword(new_password)) {
+  //   return callRes(
+  //     res,
+  //     responseError.PARAMETER_VALUE_IS_INVALID,
+  //     'new_password'
+  //   );
+  // }
 
   if (password == new_password) {
     return callRes(
