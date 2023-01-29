@@ -672,7 +672,7 @@ router.post('/add_post', cpUpload, verify, async (req, res, next) => {
   }
 
   if (image && video) {
-    console.log('Have image and video is not permiss');
+    console.log('Have both image and video is not permiss');
     return setAndSendResponse(res, responseError.UPLOAD_FILE_FAILED);
   }
 
