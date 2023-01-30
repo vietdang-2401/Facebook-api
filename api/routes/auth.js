@@ -61,6 +61,10 @@ router.post('/signup', async (req, res) => {
     password: password,
     verifyCode: random4digit(),
     isVerified: false,
+    avatar: {
+      filename: '',
+      url: 'https://i.stack.imgur.com/l60Hf.png',
+    },
   });
 
   // console.log(newUser);

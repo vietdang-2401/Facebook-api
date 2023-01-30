@@ -8,6 +8,7 @@ const { responseError, callRes } = require('../response/error');
 const checkInput = require('../utils/validInput');
 const validTime = require('../utils/validTime');
 const MAX_FRIEND_NUMBER = 500;
+const { getUserIDFromToken } = require('../utils/getUserIdFromToken');
 // @route  POST it4788/friend/get_requested_friends
 // @access Public
 // Example: Use Postman
@@ -128,6 +129,7 @@ router.post('/set_request_friend', verify, async (req, res) => {
   };
 
   let { user_id } = req.query; // user_id là id của người nhận request friend
+
   if (user_id === undefined)
     return callRes(res, responseError.PARAMETER_IS_NOT_ENOUGH, 'user_id');
   if (typeof user_id != 'string')
@@ -546,9 +548,9 @@ router.post('/get_list_blocks', verify, async (req, res) => {
 // }
 router.post('/get_user_friends', verify, async (req, res) => {
   // input
-  let { user_id, index, count } = req.query;
+  let { token, user_id, index, count } = req.query;
   // user id from token
-  let id = req.user.id;
+  let id = await getUserIDFromToken(token);
 
   let data = {
     friends: [],
@@ -581,6 +583,7 @@ router.post('/get_user_friends', verify, async (req, res) => {
 
   try {
     thisUser = await User.findById(id).select({ friends: 1 });
+    // console.log(thisUser)
     if (!thisUser)
       return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'thisUser');
     // console.log(thisUser);
@@ -595,10 +598,12 @@ router.post('/get_user_friends', verify, async (req, res) => {
     } else {
       targetUser = thisUser;
     }
-    await targetUser
-      .populate({ path: 'friends.friend', select: 'friends' })
-      .execPopulate();
-    // console.log(targetUser);
+    await targetUser.populate({
+      path: 'friends',
+      populate: { path: 'friend' },
+    });
+    // .execPopulate()
+    console.log(targetUser);
 
     let endFor =
       targetUser.friends.length < index + count
@@ -606,17 +611,8 @@ router.post('/get_user_friends', verify, async (req, res) => {
         : index + count;
     for (let i = index; i < endFor; i++) {
       let x = targetUser.friends[i];
-      let friendInfor = {
-        id: null, // id of this guy
-        username: null,
-        avatar: null,
-        same_friends: 0, //number of same friends
-        created: null, //time start friend between this guy and targetUser
-      };
-      friendInfor.id = x.friend._id.toString();
-      friendInfor.username = x.friend.username;
-      friendInfor.avatar = x.friend.avatar.url;
-      friendInfor.created = validTime.timeToSecond(x.createdAt);
+      console.log('ban be', x);
+      const friendInfor = await User.findById(x.friend._id.toString());
 
       if (!thisUser._id.equals(x.friend._id))
         if (thisUser.friends.length > 0 && x.friend.friends.length > 0) {
@@ -638,7 +634,7 @@ router.post('/get_user_friends', verify, async (req, res) => {
 
 router.post('/get_list_suggested_friends', verify, async (req, res) => {
   try {
-    const { index, count } = req.query;
+    const { index, count, user_id } = req.query;
     // check input data
     if (index === undefined || count === undefined)
       return callRes(
@@ -659,7 +655,7 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
         ': index, count'
       );
 
-    let id = req.user.id;
+    let id = user_id;
     let data = {
       total: 0,
       list_users: [],
@@ -683,12 +679,11 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
             responseError.NO_DATA_OR_END_OF_LIST_DATA,
             'targetUser'
           );
-        await targetUser
-          .populate({
-            path: 'friends.friend',
-            select: 'friends _id name avatar',
-          })
-          .execPopulate();
+        await targetUser.populate({
+          path: 'friends.friend',
+          select: 'friends _id name avatar',
+        });
+        // .execPopulate()
         for (let y of targetUser.friends) {
           if (!y.friend._id.equals(id) && !listID.includes(y.friend._id)) {
             let e = {
@@ -710,8 +705,8 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
       }
     }
     if (list_users.length == 0) {
-      let users = await User.find({ 'user._id': { $ne: id } })
-        .select({ friends: 1, _id: 1, name: 1, avatar: 1 })
+      let users = await User.find()
+        .select({ friends: 0, _id: 1, name: 1, avatar: 1 })
         .sort('-createdAt');
       if (!users)
         return callRes(
@@ -728,6 +723,7 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
         };
         if (thisUser.friends.length > 0 && y.friends.length > 0) {
           e.same_friends = countSameFriend(thisUser.friends, y.friends);
+          console.log(e.same_friends);
         }
         list_users.push(e);
       }
