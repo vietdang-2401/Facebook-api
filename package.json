@@ -4,7 +4,7 @@
   "description": "the api ",
   "main": "server.js",
   "scripts": {
-    "start": "node api/server.js",
+    "start": "nodemon api/server.js",
     "server": "nodemon api/server.js"
   },
   "author": "team20201",

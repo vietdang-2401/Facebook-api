@@ -5,9 +5,10 @@ const verify = require('../utils/verifyToken');
 const {getUserIDFromToken} = require('../utils/getUserIDFromToken');
 // var { responseError, setAndSendResponse } = require('../response/error');
 
-router.post('/create-noti', async (req, res) => {
+router.post('/create-noti', verify,  async (req, res) => {
   const { post_id, owner_id, token, notification_type } = req.body
-  const user_id = getUserIDFromToken(token)
+  const user_id = req.body.userId
+
   const newNotification = new Notification({
     post_id,
     owner_id,
@@ -25,8 +26,9 @@ router.post('/create-noti', async (req, res) => {
 router.post('/get-noti', async (req, res) => {
   try {
     const { token } = req.body
-    const owner_id = getUserIDFromToken(token)
-    const notifications = await Notification.find({ owner_id })
+    const owner_id = await getUserIDFromToken(token)
+
+    const notifications = await Notification.find({ owner_id: owner_id._id })
     const data = notifications.map(async noti => {
       const {
         post_id,
@@ -55,6 +57,7 @@ router.post('/get-noti', async (req, res) => {
           actionInTitle += 'đã chấp nhận lời mời kết bạn của bạn.'
           break
       }
+      
       const user = await User.findById(user_id)
       const title = `${user.name} ${actionInTitle}`
       return {
@@ -69,7 +72,9 @@ router.post('/get-noti', async (req, res) => {
         user_id
       }
     })
-    res.status(200).send({ data, message: 'thanh cong' })
+    Promise.all(data).then((data) => {
+      res.status(200).send({ data, message: 'thanh cong' })
+    })
   }
   catch (err) {
     res.status(200).send({ message: 'co loi roi' })
