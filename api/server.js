@@ -31,6 +31,7 @@ app.use('/it4788/friend', require('./routes/friend'));
 app.use('/it4788/setting', require('./routes/settings'));
 app.use('/it4788/user', require('./routes/user'));
 app.use('/it4788/chat', require('./routes/chat'));
+app.use('/it4788/notification', require('./routes/notification'))
 app.use(function (err, req, res, next) {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_UNEXPECTED_FILE') {
