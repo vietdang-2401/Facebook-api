@@ -54,7 +54,7 @@ router.post('/signup', async (req, res) => {
   const newUser = new User({
     firstName: req.body.firstName,
     lastName: req.body.lastName,
-    name: req.body.lastName + req.body.firstName ,
+    name: req.body.lastName + " " + req.body.firstName ,
     birthday: req.body.birthday,
     phoneNumber: phoneNumber,
     email: req.body.email,
@@ -63,7 +63,7 @@ router.post('/signup', async (req, res) => {
     isVerified: false,
   });
 
-  console.log(newUser);
+  // console.log(newUser);
   if (phoneNumber === undefined || password === undefined) {
     return callRes(
       res,
@@ -382,8 +382,9 @@ router.post('/login', async (req, res) => {
   }
 });
 
-router.post('/change_password', verifyToken, async (req, res) => {
+router.post('/change_password', verify, async (req, res) => {
   // const { token, password, new_password } = req.query;
+  const token = req.query.token
   const password = req.body.password;
   const new_password = req.body.new_password;
   const userId = req.body.userId
@@ -404,16 +405,16 @@ router.post('/change_password', verifyToken, async (req, res) => {
       'password, new_password'
     );
   }
-  if (!validInput.checkUserPassword(password)) {
-    return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
-  }
-  if (!validInput.checkUserPassword(new_password)) {
-    return callRes(
-      res,
-      responseError.PARAMETER_VALUE_IS_INVALID,
-      'new_password'
-    );
-  }
+  // if (!validInput.checkUserPassword(password)) {
+  //   return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'password');
+  // }
+  // if (!validInput.checkUserPassword(new_password)) {
+  //   return callRes(
+  //     res,
+  //     responseError.PARAMETER_VALUE_IS_INVALID,
+  //     'new_password'
+  //   );
+  // }
 
   if (password == new_password) {
     return callRes(
