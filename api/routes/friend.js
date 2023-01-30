@@ -706,7 +706,8 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
     }
     if (list_users.length == 0) {
       let users = await User.find()
-        .select({ friends: 0, _id: 1, name: 1, avatar: 1 })
+        .select({ friends: 0 })
+        // _id: 1, name: 1, avatar: 1
         .sort('-createdAt');
       if (!users)
         return callRes(
@@ -728,6 +729,7 @@ router.post('/get_list_suggested_friends', verify, async (req, res) => {
         list_users.push(e);
       }
     }
+    console.log(list_users);
     data.list_users = list_users.slice(index, index + count);
     data.total = list_users.length;
     return callRes(res, responseError.OK, data);
