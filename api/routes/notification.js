@@ -6,24 +6,28 @@ const {getUserIDFromToken} = require('../utils/getUserIDFromToken');
 // var { responseError, setAndSendResponse } = require('../response/error');
 
 router.post('/create-noti', verify,  async (req, res) => {
-  const { post_id, owner_id, token, notification_type } = req.body
-  const user_id = req.body.userId
+  try {
+    const { post_id, owner_id, token, notification_type } = req.body
+    const user_id = await getUserIDFromToken(token)
 
-  const newNotification = new Notification({
-    post_id,
-    owner_id,
-    user_id,
-    created: new Date(),
-    read: 0,
-    last_badge: 1,
-    notification_type
-  })
-  newNotification.save()
-    .then(() => res.status(200).send({ message: 'thanh cong' }))
-    .catch(() => res.status(200).send({ message: 'that bai' }))
+    const newNotification = new Notification({
+      post_id,
+      owner_id,
+      user_id,
+      created: new Date(),
+      read: 0,
+      last_badge: 1,
+      notification_type
+    })
+    newNotification.save()
+    res.status(200).send({ message: 'thanh cong' })
+  } catch(err) {
+    console.log(err)
+    res.status(200).send({ message: 'that bai' })
+  }
 })
 
-router.post('/get-noti', async (req, res) => {
+router.post('/get-noti', verify, async (req, res) => {
   try {
     const { token } = req.body
     const owner_id = await getUserIDFromToken(token)
@@ -81,4 +85,31 @@ router.post('/get-noti', async (req, res) => {
   }
 })
 
+router.post('/change-status', async (req, res) => {
+  try {
+    const { notification_id } = req.body
+
+    await Notification.findByIdAndUpdate(notification_id, {
+      read: 1
+    })
+
+    res.status(200).send({message: 'thanh cong'})
+  } catch (err) {
+    console.log(err)
+    res.status(200).send({message: 'Loi doi trang thai chua doc/ da doc thong bao'})
+  }
+})
+
+router.post('/delete-noti', async (req, res) => {
+  try {
+    const { notification_id } = req.body
+
+    await Notification.deleteOne({_id: notification_id})
+
+    res.status(200).send({message: 'thanh cong'})
+  } catch (err) {
+    console.log(err)
+
+  }
+})
 module.exports = router
