@@ -524,7 +524,7 @@ router.post('/get_post', async (req, res) => {
           author: post.author
             ? {
                 id: post.author._id,
-                name: post.author.name ? post.author.name : null,
+                username: post.author.name ? post.author.name : null,
                 avatar: post.author.avatar.url ? post.author.avatar.url : null,
               }
             : null,
@@ -1043,6 +1043,7 @@ router.post('/edit_post', cpUpload, verify, async (req, res) => {
       try {
         await deleteRemoteFile(post.image[i].filename);
       } catch (err) {
+        console.log(post.image[i].filename);
         return setAndSendResponse(res, responseError.UNKNOWN_ERROR);
       }
       post.image.splice(i, 1);
