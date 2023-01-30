@@ -10,7 +10,7 @@ let data = {
   y: undefined
 }
 */
-function toString(o) {
+function toStrings(o) {
   Object.keys(o).forEach(k => {
 
       if (o[k] && typeof o[k] === 'object') {
@@ -24,7 +24,7 @@ function toString(o) {
 }
 
 var convertString = (data) => {
-  return toString(data)
+  return toStrings(data)
 }
 // console.log(convertString(data))
 module.exports = convertString;

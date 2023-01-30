@@ -30,7 +30,9 @@ const uploader = multer({
 })
 
 router.post('/get_user_info', async (req, res) => {
-  let { token, user_id } = req.query
+  let token = req.query.token
+  let user_id = req.query.user_id
+
   let tokenUser, tokenError
   if (token) {
     tokenUser = await getUserIDFromToken(token)
@@ -48,6 +50,9 @@ router.post('/get_user_info', async (req, res) => {
   let data = {
     id: null,
     username: null,
+    firstName: null,
+    lastName: null,
+    middleName: null,
     created: null,
     description: null,
     avatar: null,
@@ -86,6 +91,9 @@ router.post('/get_user_info', async (req, res) => {
     }
     data.id = user._id.toString()
     data.username = user.name
+    data.firstName = user.firstName
+    data.lastName = user.lastName
+    data.middleName = user.middleName
     data.created = validTime.timeToSecond(user.createdAt)
     data.description = user.description
     data.avatar = user.avatar.url
@@ -108,12 +116,13 @@ router.post('/get_user_info', async (req, res) => {
   }
 })
 
-router.post('/update_name', async (req, res) => {
+router.post('/update_name',verify, async (req, res) => {
   const firstName = req.body.firstName
   const lastName = req.body.lastName
   const middleName = req.body.middleName
-  const name = lastName + middleName + firstName
-  const _id = req.query.userId
+  const name = lastName + " "+ middleName + " " + firstName
+  const _id = req.body.userId
+  const token = req.query.token
 
   User.findByIdAndUpdate(
     _id,
@@ -125,12 +134,18 @@ router.post('/update_name', async (req, res) => {
     },
     function (err, docs) {
       if (err) {
+        console.log(err);
         return callRes(res, responseError.UNKNOWN_ERROR, err.message)
       } else {
-        return callRes(res, responseError.OK)
+        docs.firstName = firstName;
+        docs.lastName = lastName;
+        docs.middleName = middleName;
+        docs.name = name;
+        return callRes(res, responseError.OK, docs)
       }
     },
   )
+
 })
 
 var cpUpload = uploader.fields([{ name: 'avatar' }, { name: 'cover_image' }])

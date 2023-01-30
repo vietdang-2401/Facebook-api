@@ -14,6 +14,10 @@ const { timeToSecond } = require('../utils/validTime');
 
 router.post('/search_user', (req, res) => {
     var searchValue = req.body.searchValue;
+    if(!searchValue) {
+        return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, "không có searchValue")
+    }
+
     User.find({"name": { $regex: '.*' + searchValue + '.*' }})
     .then((data) => {
         if (!data) {
@@ -21,7 +25,8 @@ router.post('/search_user', (req, res) => {
         return callRes(res, responseError.OK, data)
     })
     .catch((err) => {
-        return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, data)
+        console.log(err);
+        return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, "lỗi không xác định")
     });
 
 })

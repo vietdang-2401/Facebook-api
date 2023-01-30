@@ -233,9 +233,12 @@ router.post('/set_request_friend', verify, async (req, res) => {
 router.post('/set_block', verify, async (req, res) => {
   var thisUser, targetUser;
 
-  let { token, user_id, type } = req.query;
-  let id = req.user.id;
+  let token = req.body.token;
+  let user_id = req.body.userId;
+  let type = req.body.type;
+  let id = req.query.id;
   thisUser = await User.findById(id);
+
   if (thisUser.isBlocked) {
     return callRes(
       res,
@@ -243,13 +246,13 @@ router.post('/set_block', verify, async (req, res) => {
       'Your account has been blocked'
     );
   }
-  if (!token || !user_id || !type) {
-    return callRes(
-      res,
-      responseError.PARAMETER_IS_NOT_ENOUGH,
-      'token and user_id and type'
-    );
-  }
+  // if (!token || !user_id || !type) {
+  //   return callRes(
+  //     res,
+  //     responseError.PARAMETER_IS_NOT_ENOUGH,
+  //     'token and user_id and type',
+  //   )
+  // }
   if (type != 1 && type != 0) {
     return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'type');
   }
@@ -458,7 +461,11 @@ router.post('/set_accept_friend', verify, async (req, res) => {
 });
 
 router.post('/get_list_blocks', verify, async (req, res) => {
-  let { token, index, count } = req.query;
+  let id = req.query.id;
+  let token = req.body.token;
+  let index = req.body.index;
+  let count = req.body.count;
+
   if (token === undefined || index === undefined || count === undefined) {
     return callRes(
       res,
@@ -480,8 +487,8 @@ router.post('/get_list_blocks', verify, async (req, res) => {
   if (!isNumCount) {
     return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'count');
   }
-  index = parseInt(req.query.index);
-  count = parseInt(req.query.count);
+  index = parseInt(req.body.index);
+  count = parseInt(req.body.count);
   if (index < 0) {
     return callRes(res, responseError.PARAMETER_VALUE_IS_INVALID, 'index');
   }
@@ -491,7 +498,6 @@ router.post('/get_list_blocks', verify, async (req, res) => {
   if (count == 0) {
     return callRes(res, responseError.NO_DATA_OR_END_OF_LIST_DATA);
   }
-  let id = req.user.id;
   let thisUser = await User.findById(id);
   if (thisUser.isBlocked) {
     return callRes(
@@ -517,7 +523,7 @@ router.post('/get_list_blocks', verify, async (req, res) => {
       avatar: null,
     };
     userInfo.id = blockedUser._id.toString();
-    userInfo.username = blockedUser.name;
+    userInfo.name = blockedUser.name;
     userInfo.avatar = blockedUser.avatar.url;
     data.push(userInfo);
   }

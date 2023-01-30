@@ -7,9 +7,9 @@ var checkUserPassword = (password) => {
 
 // @desc check phone number
 // @desc password valid: 10 digits, begin with '0'
-var checkPhoneNumber = (phonenumber) => {
+var checkPhoneNumber = (phoneNumber) => {
   var regex = /^0[0-9]{9}$/;
-  return regex.test(phonenumber);
+  return regex.test(phoneNumber);
 };
 
 const checkNotNegativeInteger = (x) => {
