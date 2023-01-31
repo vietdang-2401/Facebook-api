@@ -4,6 +4,8 @@ const mongoose = require('mongoose')
 const cors = require('cors')
 const multer = require('multer')
 const { responseError, callRes } = require('./response/error')
+const http = require('http')
+const { Server } = require('socket.io')
 
 const app = express()
 
@@ -35,6 +37,7 @@ app.use('/it4788/friend', require('./routes/friend'))
 app.use('/it4788/setting', require('./routes/settings'))
 app.use('/it4788/user', require('./routes/user'))
 app.use('/it4788/chat', require('./routes/chat'))
+app.use('/it4788/notification', require('./routes/notification'))
 app.use(function (err, req, res, next) {
   if (err instanceof multer.MulterError) {
     if (err.code === 'LIMIT_UNEXPECTED_FILE') {
@@ -52,5 +55,22 @@ app.use(function (err, req, res, next) {
   return callRes(res, responseError.UNKNOWN_ERROR, 'Lỗi chưa xác định')
 })
 
+const server = http.createServer(app)
+
+const io = new Server(server, {
+  cors: {
+    origin: 'http://localhost:3000',
+    methods: ['GET', 'POST'],
+  },
+})
+
+io.on('connection', (socket) => {
+  // console.log(`User Connected: ${socket.id}`);
+
+  socket.on('notification', (data) => {
+    console.log(data)
+  })
+})
+
 const port = process.env.PORT || 5000
-app.listen(port, () => console.log(`Server is running on port ${port}`))
+server.listen(port, () => console.log(`Server is running on port ${port}`))

@@ -4,7 +4,7 @@
   "description": "the api ",
   "main": "server.js",
   "scripts": {
-    "start": "node api/server.js",
+    "start": "nodemon api/server.js",
     "server": "nodemon api/server.js"
   },
   "author": "team20201",
@@ -33,5 +33,9 @@
   "bugs": {
     "url": "https://github.com/vitaemin/fb-backend-dnt/issues"
   },
-  "homepage": "https://github.com/vitaemin/fb-backend-dnt#readme"
+  "homepage": "https://github.com/vitaemin/fb-backend-dnt#readme",
+  "devDependencies": {
+    "http": "^0.0.1-security",
+    "socket.io": "^4.5.4"
+  }
 }
